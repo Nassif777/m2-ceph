@@ -36,5 +36,5 @@ for no in ('ceph1', 'ceph2', 'ceph3'):
 print('Configuração temporária do E9 confirmada nos três monitores.')
 PY
 
-echo 'Depois: python3 experimento_e9_serie.py 10 (ou 20)'
+echo 'Depois: python3 experimentos/experimento_e9_serie.py 10 (ou 20)'
 echo 'Ao terminar, use: bash scripts/restaurar_e9.sh'

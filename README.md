@@ -27,9 +27,9 @@ Os diretórios `dados/` armazenam o estado dos serviços, mas **não estão no G
 ## Organização dos arquivos
 
 - `docker-compose.yml` e `ceph.conf`: contêineres e configuração do Ceph.
-- `iniciar_mons.sh`, `iniciar_mgr.sh` e `iniciar_osds.sh`: criação dos serviços na primeira instalação.
+- `scripts/iniciar_mons.sh`, `scripts/iniciar_mgr.sh` e `scripts/iniciar_osds.sh`: criação dos serviços na primeira instalação.
 - `scripts/`: comandos para instalar, verificar ou reiniciar o laboratório.
-- `experimento_e3.py` até `experimento_e9_serie.py`: programas usados nos testes.
+- `experimentos/experimento_e3.py` até `experimentos/experimento_e9_serie.py`: programas usados nos testes.
 - `evidencias/`: saídas de terminal, medições e resumos dos experimentos.
 
 ## Como usar
@@ -115,8 +115,8 @@ Para preparar os parâmetros temporários e rodar novamente o E9, **somente em u
 
 ```bash
 bash scripts/preparar_e9.sh
-python3 experimento_e9_serie.py 10
-# ou: python3 experimento_e9_serie.py 20
+python3 experimentos/experimento_e9_serie.py 10
+# ou: python3 experimentos/experimento_e9_serie.py 20
 bash scripts/restaurar_e9.sh
 ```
 

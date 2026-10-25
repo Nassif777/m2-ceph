@@ -17,14 +17,14 @@ if [[ "$CONFIRMACAO" != 'INSTALAR' ]]; then
   exit 1
 fi
 
-for arquivo in ceph.conf iniciar_mons.sh iniciar_mgr.sh iniciar_osds.sh; do
+for arquivo in ceph.conf scripts/iniciar_mons.sh scripts/iniciar_mgr.sh scripts/iniciar_osds.sh; do
   [[ -f "$arquivo" ]] || { echo "Arquivo ausente: $arquivo"; exit 1; }
 done
 
 docker compose up -d
 
 # Inicializa os serviços. Os scripts abaixo não devem ser repetidos.
-bash iniciar_mons.sh
+bash scripts/iniciar_mons.sh
 
 echo 'Aguardando os três monitores formarem quórum...'
 QUORUM_OK=0
@@ -50,8 +50,8 @@ if [[ "$QUORUM_OK" -ne 1 ]]; then
   exit 1
 fi
 
-bash iniciar_mgr.sh
-bash iniciar_osds.sh
+bash scripts/iniciar_mgr.sh
+bash scripts/iniciar_osds.sh
 
 docker exec ceph1 ceph osd pool create sd 32
 docker exec ceph1 ceph osd pool application enable sd rados
