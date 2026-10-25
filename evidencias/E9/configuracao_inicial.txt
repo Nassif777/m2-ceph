@@ -1,0 +1,10 @@
+CONFIGURACAO: osd_heartbeat_grace
+20
+CONFIGURACAO: mon_osd_down_out_interval
+600
+CONFIGURACAO: mon_osd_adjust_heartbeat_grace
+true
+CONFIGURACAO: mon_osd_adjust_down_out_interval
+true
+CONFIGURACAO: osd_heartbeat_grace no osd.0
+20

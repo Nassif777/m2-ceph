@@ -1,0 +1,26 @@
+EXPERIMENTO E5 - FALHA E QUORUM
+Registro elaborado a partir das saidas do terminal durante os testes.
+
+CENARIO 1 - TRES SERVIDORES ATIVOS
+Cluster com 3 OSDs ativos.
+Leitura e escrita funcionando normalmente.
+
+CENARIO 2 - CEPH3 DESLIGADO
+Monitores em quorum: ceph1, ceph2.
+OSDs ativos: 2 de 3.
+PGs: active+undersized+degraded.
+Leitura: CODIGO_LEITURA=0.
+Conteudo lido: 20.
+Escrita: ESCRITA OK.
+Leitura do objeto criado: CODIGO_ESCRITA_TESTE=0.
+
+CENARIO 3 - CEPH2 E CEPH3 DESLIGADOS
+Consulta ao cluster: CODIGO_STATUS=124.
+Leitura: CODIGO_LEITURA=124.
+Escrita: CODIGO_ESCRITA=124.
+Codigo 124 indica timeout de 12 segundos.
+
+RESULTADO
+Com uma falha, o cluster continuou atendendo operacoes.
+Com duas falhas, as operacoes testadas nao foram concluidas.
+A recuperacao posterior retornou o cluster ao estado active+clean.

@@ -1,0 +1,13 @@
+=== MONITOR CEPH1 ===
+mon_osd_down_out_interval:
+120
+mon_osd_adjust_heartbeat_grace:
+true
+mon_osd_adjust_down_out_interval:
+true
+osd_heartbeat_grace:
+20
+=== OSD 0 ===
+20
+=== ARQUIVO LOCAL ===
+mon_osd_down_out_interval = 120

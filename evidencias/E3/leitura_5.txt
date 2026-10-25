@@ -1,0 +1,15 @@
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0       0         0         0         0         0           -           0
+Total time run:       0.823077
+Total reads made:     3876
+Read size:            4096
+Object size:          4096
+Bandwidth (MB/sec):   18.3951
+Average IOPS:         4709
+Stddev IOPS:          0
+Max IOPS:             3875
+Min IOPS:             3875
+Average Latency(s):   0.000833638
+Max latency(s):       0.00693099
+Min latency(s):       0.000365823

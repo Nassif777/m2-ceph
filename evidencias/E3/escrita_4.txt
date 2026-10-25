@@ -1,0 +1,31 @@
+hints = 1
+Maintaining 4 concurrent writes of 4096 bytes to objects of size 4096 for up to 10 seconds or 0 objects
+Object prefix: benchmark_data_ceph1_2388
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0       0         0         0         0         0           -           0
+    1       4       421       417   1.62813   1.62891   0.0078224  0.00955965
+    2       4       814       810   1.58124   1.53516  0.00955854  0.00983744
+    3       4      1222      1218   1.58535   1.59375  0.00871733  0.00983818
+    4       4      1599      1595   1.55706   1.47266  0.00936201   0.0100187
+    5       4      1995      1991   1.55487   1.54688  0.00748482   0.0100323
+    6       4      2392      2388   1.55407   1.55078  0.00788374   0.0100401
+    7       4      2803      2799   1.56137   1.60547   0.0112956  0.00998535
+    8       3      3191      3188     1.556   1.51953   0.0135925   0.0100287
+    9       4      3547      3543   1.53716   1.38672  0.00861241   0.0101531
+   10       4      3902      3898   1.52204   1.38672   0.0121952   0.0102527
+Total time run:         10.007
+Total writes made:      3902
+Write size:             4096
+Object size:            4096
+Bandwidth (MB/sec):     1.52315
+Stddev Bandwidth:       0.084461
+Max bandwidth (MB/sec): 1.62891
+Min bandwidth (MB/sec): 1.38672
+Average IOPS:           389
+Stddev IOPS:            21.622
+Max IOPS:               417
+Min IOPS:               355
+Average Latency(s):     0.0102527
+Stddev Latency(s):      0.00316732
+Max latency(s):         0.040854
+Min latency(s):         0.00514666

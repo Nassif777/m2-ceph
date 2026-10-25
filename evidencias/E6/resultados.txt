@@ -1,0 +1,27 @@
+EXPERIMENTO E6 - PARTICAO DE REDE
+
+SIMULACAO
+ceph3 desconectado da rede Docker m2-ceph_cephnet.
+O container permaneceu ligado.
+
+LADO MAJORITARIO
+Quorum: ceph1, ceph2.
+OSDs ativos: 2 de 3.
+PGs: active+undersized+degraded.
+Leitura: CODIGO_LEITURA=0.
+Escrita: CODIGO_ESCRITA=0.
+
+LADO ISOLADO
+Leitura pelo ceph3: CODIGO_MINORIA=124.
+A leitura nao terminou dentro de 12 segundos.
+
+RECUPERACAO
+ceph3 reconectado com IP 172.30.0.13.
+Monitores: 3 em quorum.
+OSDs: 3 up, 3 in.
+PGs: 33 active+clean.
+
+CONCLUSAO
+O lado majoritario permaneceu disponivel.
+O servidor isolado nao concluiu a leitura.
+O cluster recuperou o estado normal apos a reconexao.

@@ -1,0 +1,2 @@
+
+[{"section":"osd.0","name":"osd_mclock_max_capacity_iops_ssd","value":"7368.027574","level":"basic","can_update_at_runtime":true,"mask":""},{"section":"osd.1","name":"osd_mclock_max_capacity_iops_ssd","value":"6929.189737","level":"basic","can_update_at_runtime":true,"mask":""},{"section":"osd.2","name":"osd_mclock_max_capacity_iops_ssd","value":"6485.495489","level":"basic","can_update_at_runtime":true,"mask":""}]

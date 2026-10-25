@@ -1,0 +1,22 @@
+=== AMBIENTE DO PROJETO ===
+GitHub Codespaces
+=== SISTEMA OPERACIONAL ===
+Linux codespaces-18dfa4 6.8.0-1064-azure #72~22.04.1-Ubuntu SMP Wed Jul 22 23:39:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+=== MEMORIA DISPONIVEL ===
+               total        used        free      shared  buff/cache   available
+Mem:           7.8Gi       4.1Gi       141Mi        67Mi       3.9Gi       3.7Gi
+Swap:             0B          0B          0B
+=== ESPACO EM DISCO ===
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/loop4       32G   15G   16G  48% /workspaces
+=== DOCKER ===
+Docker version 29.8.0-1, build 88096ef00576baf72a9cb45caa45c0544c40e0a7
+=== DOCKER COMPOSE ===
+Docker Compose version v5.5.1
+=== VERSAO DO CEPH ===
+ceph version 19.2.7 (9ec952b9f9668e9fa97e29a4c2b51e951674df2a) squid (stable)
+=== CONSUMO DOS CONTEINERES ===
+CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT   MEM %     NET I/O          BLOCK I/O        PIDS
+61218bbbb82d   ceph1     1.47%     812.4MiB / 1GiB     79.34%    704MB / 633MB    332MB / 1.94GB   192
+7ddbb32442f2   ceph2     0.74%     199MiB / 512MiB     38.87%    303MB / 365MB    127MB / 600MB    102
+17ee8e7ab52b   ceph3     0.79%     171.2MiB / 512MiB   33.44%    119MB / 99.9MB   57.3MB / 545MB   102

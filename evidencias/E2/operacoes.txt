@@ -1,0 +1,7 @@
+=== LEITURA DO OBJETO ===
+Teste de replicacao Ceph M2
+=== MAPEAMENTO DO OBJETO ===
+osdmap e129 pool 'sd' (2) object 'arquivo1' -> pg 2.dbdc27d7 (2.17) -> up ([1,2,0], p1) acting ([1,2,0], p1)
+=== CONFIGURACAO DE REPLICACAO ===
+size: 3
+min_size: 2
