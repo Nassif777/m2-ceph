@@ -6,7 +6,8 @@ import json
 import statistics
 from pathlib import Path
 
-PASTA = Path("evidencias/E7")
+from datetime import datetime
+PASTA = Path(__file__).resolve().parents[1] / "evidencias" / "novas_execucoes" / "E7" / datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 PASTA.mkdir(parents=True, exist_ok=True)
 
 resultados = []

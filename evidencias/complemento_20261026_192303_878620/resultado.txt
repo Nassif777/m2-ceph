@@ -1,0 +1,3 @@
+E5: 3 e 2 nos: leitura/escrita OK; 1 no: leitura/escrita timeout 15 s. A consulta de status foi registrada separadamente e pode retornar estado anterior.
+E6: maioria leitura/escrita OK; minoria leitura/escrita timeout 15 s.
+Cluster recuperado apos cada etapa.

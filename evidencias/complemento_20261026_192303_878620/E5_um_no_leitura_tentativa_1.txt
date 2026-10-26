@@ -1,0 +1,3 @@
+$ docker exec ceph1 timeout 15 rados -p sd get complemento_m2 -
+
+CODIGO=124

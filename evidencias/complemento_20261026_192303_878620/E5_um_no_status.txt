@@ -1,0 +1,3 @@
+$ docker exec ceph1 timeout 15 ceph -s
+
+CODIGO=124

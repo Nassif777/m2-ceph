@@ -23,6 +23,10 @@ done
 
 docker compose up -d
 
+if [[ "${CODESPACES:-}" == "true" ]]; then
+  bash scripts/ajustar_rede_codespaces.sh
+fi
+
 # Inicializa os serviços. Os scripts abaixo não devem ser repetidos.
 bash scripts/iniciar_mons.sh
 
@@ -52,6 +56,30 @@ fi
 
 bash scripts/iniciar_mgr.sh
 bash scripts/iniciar_osds.sh
+
+echo 'Aguardando os tres OSDs ficarem ativos...'
+OSDS_OK=0
+
+for _ in $(seq 1 40); do
+  if timeout 10 docker exec ceph1 ceph osd stat -f json 2>/dev/null | python3 -c '
+import json, sys
+try:
+    d = json.load(sys.stdin)
+    ok = d["num_up_osds"] == 3 and d["num_in_osds"] == 3
+    sys.exit(0 if ok else 1)
+except Exception:
+    sys.exit(1)
+' 2>/dev/null; then
+    OSDS_OK=1
+    break
+  fi
+  sleep 3
+done
+
+if [[ "$OSDS_OK" -ne 1 ]]; then
+  echo 'Os OSDs nao ficaram prontos. Confira os processos e a rede.'
+  exit 1
+fi
 
 docker exec ceph1 ceph osd pool create sd 32
 docker exec ceph1 ceph osd pool application enable sd rados

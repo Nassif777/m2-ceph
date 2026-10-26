@@ -1,135 +1,129 @@
-# M2 - Ceph (Sistemas Distribuídos)
+# M2 — Ceph · Ênfase C: detecção de falhas lentas
 
-Trabalho da disciplina de Sistemas Distribuídos da Univali.
+Laboratório de Sistemas Distribuídos: três contêineres Ceph, experimentos E1–E9
+e comparação do tempo até DOWN/OUT com `osd_heartbeat_grace` de 10 e 20 segundos.
 
-**Tema:** T2 - Ceph  
-**Ênfase:** C - Detecção de falhas lentas
+## Demonstração ao vivo
 
-Neste projeto montei um cluster Ceph com três nós no Docker e fiz testes de replicação, consistência, falha de nós, partição de rede, eleição de monitores e recuperação. A parte de aprofundamento compara o tempo de detecção de falhas usando diferentes valores de `osd_heartbeat_grace`.
+Execute dentro da pasta do projeto, com o cluster já instalado e em execução:
+
+```bash
+bash scripts/demo.sh status
+bash scripts/demo.sh objeto
+bash scripts/demo.sh falha
+bash scripts/demo.sh resultados
+```
+
+1. **status:** mostra os nós, OSDs, quórum, líder e época.
+2. **objeto:** escreve pelo ceph1, lê pelo ceph3 e mostra PG, acting e primário.
+3. **falha:** para ceph3, aguarda a detecção, mostra leitura e escrita com dois
+   nós e recupera automaticamente os serviços usando os dados existentes.
+4. **resultados:** apresenta as cinco medições de recuperação e as duas séries
+   E9, com média e desvio padrão amostral. Não repete os experimentos.
+
+Se precisar retomar uma recuperação: `bash scripts/demo.sh recuperar`.
+O passo de falha pode levar alguns minutos. Ensaie antes da apresentação;
+os comandos novos ainda precisam de validação no Codespace original.
+O teste de objeto e a demonstração gravam apenas objetos de laboratório no pool `sd`.
+Não são executados instaladores durante a apresentação.
 
 ## Ambiente
 
-Os testes foram feitos no GitHub Codespaces, com Linux e aproximadamente 7,8 GiB de RAM.
+Ceph 19.2.7; Docker 29.8.0; Compose 5.5.1; Codespaces com 7,8 GiB de RAM.
+Pool `sd`: `size=3`, `min_size=2`; disco simulado de 2 GiB por OSD.
 
-- Ceph 19.2.7 (Squid)
-- Docker 29.8.0 e Docker Compose 5.5.1
-- Rede `172.30.0.0/24`
-- Pool `sd`, com `size = 3` e `min_size = 2`
-
-| Nó | IP | Processos | Limite de RAM |
+| Nó | IP | Serviços | Limite de RAM |
 |---|---|---|---|
-| ceph1 | 172.30.0.11 | MON, MGR e OSD.0 | 1 GiB |
-| ceph2 | 172.30.0.12 | MON e OSD.1 | 512 MiB |
-| ceph3 | 172.30.0.13 | MON e OSD.2 | 512 MiB |
+| ceph1 | 172.30.0.11 | MON, MGR, OSD.0 | 1 GiB |
+| ceph2 | 172.30.0.12 | MON, OSD.1 | 512 MiB |
+| ceph3 | 172.30.0.13 | MON, OSD.2 | 512 MiB |
 
-Os diretórios `dados/` armazenam o estado dos serviços, mas **não estão no Git**. Os comandos de instalação e os de reinício são diferentes justamente para não formatar OSDs existentes.
+MON: portas 3300/6789; os demais endereços de serviço são anunciados pelo mapa
+do cluster. Os processos usam a rede Docker `m2-ceph_cephnet`.
 
-## Organização dos arquivos
+## Instalação e reinício
 
-- `docker-compose.yml` e `ceph.conf`: contêineres e configuração do Ceph.
-- `scripts/iniciar_mons.sh`, `scripts/iniciar_mgr.sh` e `scripts/iniciar_osds.sh`: criação dos serviços na primeira instalação.
-- `scripts/`: comandos para instalar, verificar ou reiniciar o laboratório.
-- `experimentos/experimento_e3.py` até `experimentos/experimento_e9_serie.py`: programas usados nos testes.
-- `evidencias/`: saídas de terminal, medições e resumos dos experimentos.
+**Cluster existente:** `bash scripts/reiniciar_cluster.sh` inicia os serviços
+ausentes; não registra nem formata OSDs. Aguarde todos os PGs voltarem a
+`active+clean`. Um aviso de autenticação de laboratório pode manter HEALTH_WARN.
 
-## Como usar
-
-### Cluster que já foi instalado
-
-Para consultar o estado:
-
-```bash
-bash scripts/verificar_cluster.sh
-```
-
-Se os contêineres foram desligados e os dados continuam em `dados/`, é possível iniciar os processos que estiverem ausentes:
-
-```bash
-bash scripts/reiniciar_cluster.sh
-```
-
-Esse script não cria nem formata OSDs. Não use `docker compose down -v` e não apague `dados/` se quiser preservar o cluster.
-
-Para fazer uma operação simples de escrita e leitura:
-
-```bash
-bash scripts/testar_objeto.sh
-```
-
-### Instalação nova
-
-Em uma pasta sem dados anteriores do Ceph, com Docker e Compose instalados:
-
-```bash
-docker compose up -d
-```
-
-No Codespaces utilizado houve bloqueio de comunicação na bridge Docker. Se isso também acontecer, o ajuste de rede empregado no laboratório está em:
-
-```bash
-bash scripts/ajustar_rede_codespaces.sh
-```
-
-Esse ajuste modifica uma regra de firewall do ambiente e só deve ser usado quando necessário.
-
-Com a rede funcionando, a instalação inicial pode ser iniciada por:
+**Somente ambiente novo, sem dados anteriores:**
 
 ```bash
 bash scripts/configurar_cluster.sh
 ```
 
-O script pede confirmação antes de criar os MONs, MGR e OSDs e bloqueia a instalação se encontrar dados existentes. **Não execute esse comando no cluster atual.** Os scripts de inicialização originais não foram feitos para rodar duas vezes sobre os mesmos dados.
+Requer Linux, Docker Compose, Bash, Python 3, `timeout` e acesso à imagem
+`quay.io/ceph/ceph:v19`. No Codespaces, o instalador aplica o ajuste de firewall
+da bridge usado neste laboratório; ele exige sudo. O instalador pede confirmação
+e recusa dados existentes. A instalação a partir de clone limpo ainda precisa
+ser validada em um ambiente separado.
 
-> Observação: o ambiente do trabalho foi montado e testado no Codespaces original. A instalação inteira a partir de um clone limpo ainda precisa ser validada em outro ambiente. Os scripts desta reorganização também precisam dessa validação.
+**Preserve `dados/` e `.git/`. Não execute instaladores no cluster atual,
+não apague os dados e não use `docker compose down -v`.**
 
-## Experimentos
+## Experimentos e evidências
 
-| Teste | O que foi observado | Arquivos |
-|---|---|---|
-| E1 | Topologia e quórum | `evidencias/E1/` |
-| E2 | Escrita, leitura e localização de objeto | `evidencias/E2/` |
-| E3 | Replicação e desempenho (5 medições) | `evidencias/E3/` |
-| E4 | Leituras após escritas e operações concorrentes | `evidencias/E4/` |
-| E5 | Quórum com um e dois nós desligados | `evidencias/E5/` |
-| E6 | Comportamento durante partição de rede | `evidencias/E6/` |
-| E7 | Tempo de recuperação (5 medições) | `evidencias/E7/` |
-| E8 | Eleição de líder entre monitores | `evidencias/E8/` |
-| E9 | Detecção de falhas com diferentes heartbeats | `evidencias/E9/` |
+| Teste | Evidência e execução |
+|---|---|
+| E1 | `evidencias/E1/`: status, topologia e quórum |
+| E2 | `evidencias/E2/`: leitura, mapeamento e replicação |
+| E3 | `evidencias/E3/`; `python3 experimentos/experimento_e3.py` |
+| E4 | `evidencias/E4/`; `python3 experimentos/experimento_e4_concorrente.py` |
+| E5 | `evidencias/E5/`: resumo da falha de um e de dois nós |
+| E6 | `evidencias/E6/`: resumo da partição |
+| E7 | `evidencias/E7/`; `python3 experimentos/experimento_e7.py` |
+| E8 | `evidencias/E8/`: troca de líder e épocas |
+| E9 | `evidencias/E9/`: cinco repetições para grace 10 e 20 |
 
-Os arquivos de E5 e E6 são resumos das saídas obtidas durante os testes, não logs brutos coletados automaticamente.
+As novas execuções dos programas Python salvam em subpastas exclusivas de
+`evidencias/novas_execucoes/`, preservando os registros originais. Execute apenas
+um experimento por vez, sempre com o cluster recuperado.
 
-### Resultado principal do E9
-
-Foi usado `docker pause ceph3` para simular um nó que parou de responder. O tempo foi medido desde a suspensão até o estado `down` e depois até `out`.
-
-| Parâmetro | Média até DOWN | Média até OUT | Repetições |
-|---|---:|---:|---:|
-| Grace de 10 s | 18,593 s | 66,089 s | 5 |
-| Grace de 20 s | 28,318 s | 74,498 s | 5 |
-
-No laboratório, a detecção com grace de 10 s foi cerca de 34% mais rápida. A contrapartida esperada é uma tolerância menor a atrasos de rede, com possível aumento de falsos positivos. **Não houve medição direta de falsos positivos.**
-
-A tentativa adicional com grace de 30 s foi interrompida durante a recuperação porque o processo OSD.2 parou. O cluster foi recuperado depois, mas essa tentativa não entrou nas médias.
-
-Para preparar os parâmetros temporários e rodar novamente o E9, **somente em um cluster saudável**:
+Para repetir o E9, fora da apresentação:
 
 ```bash
 bash scripts/preparar_e9.sh
 python3 experimentos/experimento_e9_serie.py 10
-# ou: python3 experimentos/experimento_e9_serie.py 20
+python3 experimentos/experimento_e9_serie.py 20
 bash scripts/restaurar_e9.sh
 ```
 
-Não rode esses experimentos em paralelo. Confira se o Ceph voltou a `3 up`, `3 in` e `active+clean` antes de cada nova execução. Se ocorrer um erro, recupere o cluster antes de continuar.
+Se ocorrer erro, confirme a recuperação e execute a restauração antes de continuar.
+A preparação usa temporariamente DOWN→OUT de 45 s e desativa ajustes adaptativos;
+a restauração retorna aos valores do laboratório: 120 s e grace 20 s.
 
-## Limitações
+## Resultados principais
 
-Os três nós estavam na mesma máquina virtual, usando a mesma infraestrutura física e relógio. Por isso, os resultados não representam um cluster instalado em três servidores independentes. Os discos dos OSDs também foram simulados com armazenamento local.
+| Série (n=5) | Até DOWN, média ± desvio | Até OUT, média ± desvio |
+|---|---:|---:|
+| Grace 10 s | 18,593 ± 2,002 s | 66,089 ± 2,701 s |
+| Grace 20 s | 28,318 ± 1,442 s | 74,498 ± 2,124 s |
 
-A autenticação do Ceph foi desativada para simplificar os testes, e os contêineres usam `privileged: true`. **Essa configuração é apenas de laboratório e não deve ser exposta à internet ou usada em produção.**
+Recuperação E7: **15,754 ± 1,115 s**, cinco repetições, desvio amostral.
+O grace 10 reduziu em aproximadamente 34% a média até DOWN neste laboratório.
+A menor tolerância a atrasos pode aumentar falsos positivos, mas eles não foram
+medidos. A série de grace 30 foi interrompida; seu CSV vazio não entra na análise.
+
+## Limites e itens da entrega
+
+Os três nós compartilham máquina, armazenamento e relógio. Cephx desativado,
+contêineres privilegiados e discos em arquivo são escolhas apenas de laboratório.
+Com três hosts e size=3, retirar um host não permite recompor três cópias em três
+hosts distintos; os registros da falha longa mostram PGs ainda degradados.
+
+E5/E6 contêm resumos, não logs brutos. O registro E5 usa timeout de 12 s,
+enquanto o roteiro pede 15 s. Falta registrar escrita no lado isolado em E6.
+Preserve esses registros e complemente as evidências sem substituir medições.
+
+O pacote não inclui relatório nem slides. A entrega ainda exige os diagramas
+próprios, Q1–Q14, S1–S4, previsões/análises de E1–E9, quadro-síntese, referências,
+papel dos integrantes e declaração de uso de IA, conforme o PDF do professor.
+O roteiro tem indicações conflitantes de duração da demonstração; ensaie o tempo
+com a equipe. Prepare vídeo de contingência e comece com o cluster em execução.
 
 ## Referências
 
-- WEIL, S. A. et al. *Ceph: A Scalable, High-Performance Distributed File System*. OSDI, 2006.
-- WEIL, S. A. et al. *CRUSH: Controlled, Scalable, Decentralized Placement of Replicated Data*. SC, 2006.
-- [Documentação do Ceph](https://docs.ceph.com/).
+- WEIL et al. *Ceph: A Scalable, High-Performance Distributed File System*. OSDI, 2006.
+- WEIL et al. *CRUSH: Controlled, Scalable, Decentralized Placement of Replicated Data*. SC, 2006.
+- Documentação oficial: https://docs.ceph.com/

@@ -5,7 +5,8 @@ import csv
 import statistics
 from pathlib import Path
 
-pasta = Path("evidencias/E3")
+from datetime import datetime
+pasta = Path(__file__).resolve().parents[1] / "evidencias" / "novas_execucoes" / "E3" / datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 pasta.mkdir(parents=True, exist_ok=True)
 
 resultados = []

@@ -1,0 +1,4 @@
+$ docker exec ceph3 timeout 15 rados -p sd get complemento_m2 -
+complemento M2
+
+CODIGO=0

@@ -5,7 +5,8 @@ import time
 import csv
 from pathlib import Path
 
-PASTA = Path("evidencias/E4")
+from datetime import datetime
+PASTA = Path(__file__).resolve().parents[1] / "evidencias" / "novas_execucoes" / "E4" / datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 PASTA.mkdir(parents=True, exist_ok=True)
 
 OBJETO = "contador_e4_concorrente"

@@ -9,7 +9,8 @@ from pathlib import Path
 
 GRACE = int(sys.argv[1]) if len(sys.argv) > 1 else 20
 REPETICOES = 5
-PASTA = Path("evidencias/E9")
+from datetime import datetime
+PASTA = Path(__file__).resolve().parents[1] / "evidencias" / "novas_execucoes" / "E9" / datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 PASTA.mkdir(parents=True, exist_ok=True)
 ARQUIVO = PASTA / f"resultados_grace_{GRACE}.csv"
 resultados = []

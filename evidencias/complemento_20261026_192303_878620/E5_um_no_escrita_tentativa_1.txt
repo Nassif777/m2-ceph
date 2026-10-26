@@ -1,0 +1,3 @@
+$ docker exec ceph1 timeout 15 sh -c printf "complemento M2\n" > /tmp/complemento_m2.txt && rados -p sd put complemento_m2 /tmp/complemento_m2.txt
+
+CODIGO=124
