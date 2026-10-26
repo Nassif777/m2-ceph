@@ -1,0 +1,8 @@
+ID  CLASS  WEIGHT   TYPE NAME       STATUS  REWEIGHT  PRI-AFF
+-1         0.00600  root default                             
+-3         0.00200      host ceph1                           
+ 0    ssd  0.00200          osd.0       up   1.00000  1.00000
+-5         0.00200      host ceph2                           
+ 1    ssd  0.00200          osd.1       up   1.00000  1.00000
+-7         0.00200      host ceph3                           
+ 2    ssd  0.00200          osd.2     down         0  1.00000
