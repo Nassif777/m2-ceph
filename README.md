@@ -22,8 +22,9 @@ bash scripts/demo.sh resultados
    E9, com média e desvio padrão amostral. Não repete os experimentos.
 
 Se precisar retomar uma recuperação: `bash scripts/demo.sh recuperar`.
-O passo de falha pode levar alguns minutos. Ensaie antes da apresentação;
-os comandos novos ainda precisam de validação no Codespace original.
+O fluxo de demonstração foi executado no Codespace original, com leitura e
+escrita durante a falha e recuperação para 3 up, 3 in e todos os PGs active+clean.
+O passo de falha pode levar alguns minutos; ensaie o tempo antes da apresentação.
 O teste de objeto e a demonstração gravam apenas objetos de laboratório no pool `sd`.
 Não são executados instaladores durante a apresentação.
 
@@ -70,11 +71,15 @@ não apague os dados e não use `docker compose down -v`.**
 | E2 | `evidencias/E2/`: leitura, mapeamento e replicação |
 | E3 | `evidencias/E3/`; `python3 experimentos/experimento_e3.py` |
 | E4 | `evidencias/E4/`; `python3 experimentos/experimento_e4_concorrente.py` |
-| E5 | `evidencias/E5/`: resumo da falha de um e de dois nós |
-| E6 | `evidencias/E6/`: resumo da partição |
+| E5 | `evidencias/complemento_20261026_192303_878620/E5_*.txt`: saídas dos testes com três, dois e um nó |
+| E6 | `evidencias/complemento_20261026_192303_878620/E6_*.txt`: operações nos dois lados da partição e recuperação |
 | E7 | `evidencias/E7/`; `python3 experimentos/experimento_e7.py` |
 | E8 | `evidencias/E8/`: troca de líder e épocas |
 | E9 | `evidencias/E9/`: cinco repetições para grace 10 e 20 |
+
+Experimentos interrompidos ou com erros retornam código diferente de zero.
+A demonstração aguarda os PGs ativos antes de testar operações com dois nós
+e informa falha se a recuperação automática não concluir.
 
 As novas execuções dos programas Python salvam em subpastas exclusivas de
 `evidencias/novas_execucoes/`, preservando os registros originais. Execute apenas
@@ -90,7 +95,7 @@ bash scripts/restaurar_e9.sh
 ```
 
 Se ocorrer erro, confirme a recuperação e execute a restauração antes de continuar.
-A preparação usa temporariamente DOWN→OUT de 45 s e desativa ajustes adaptativos;
+A preparação configura temporariamente `mon_osd_down_out_interval=45` e desativa ajustes adaptativos;
 a restauração retorna aos valores do laboratório: 120 s e grace 20 s.
 
 ## Resultados principais
@@ -103,7 +108,9 @@ a restauração retorna aos valores do laboratório: 120 s e grace 20 s.
 Recuperação E7: **15,754 ± 1,115 s**, cinco repetições, desvio amostral.
 O grace 10 reduziu em aproximadamente 34% a média até DOWN neste laboratório.
 A menor tolerância a atrasos pode aumentar falsos positivos, mas eles não foram
-medidos. A série de grace 30 foi interrompida; seu CSV vazio não entra na análise.
+medidos. Os tempos do E9 foram observados por consultas a cada 2 s, além
+do tempo dos comandos; não representam uma medição exata do timeout interno.
+A série de grace 30 foi interrompida; seu CSV vazio não entra na análise.
 
 ## Limites e itens da entrega
 
@@ -112,13 +119,23 @@ contêineres privilegiados e discos em arquivo são escolhas apenas de laborató
 Com três hosts e size=3, retirar um host não permite recompor três cópias em três
 hosts distintos; os registros da falha longa mostram PGs ainda degradados.
 
-E5/E6 contêm resumos, não logs brutos. O registro E5 usa timeout de 12 s,
-enquanto o roteiro pede 15 s. Falta registrar escrita no lado isolado em E6.
-Preserve esses registros e complemente as evidências sem substituir medições.
+Os diretórios `evidencias/E5/` e `evidencias/E6/` preservam os resumos iniciais.
+As saídas completas posteriores estão em
+`evidencias/complemento_20261026_192303_878620/`:
 
-O pacote não inclui relatório nem slides. A entrega ainda exige os diagramas
-próprios, Q1–Q14, S1–S4, previsões/análises de E1–E9, quadro-síntese, referências,
-papel dos integrantes e declaração de uso de IA, conforme o PDF do professor.
+- E5: leitura e escrita funcionaram com três e dois nós; com um nó, ambas
+  atingiram timeout de 15 s (código 124), assim como a consulta de status.
+- E6: leitura e escrita funcionaram no lado majoritário; no nó isolado, ambas
+  atingiram timeout de 15 s (código 124).
+- Após cada etapa, foi confirmada a recuperação para 3 up, 3 in e todos os PGs
+  active+clean. As capturas de status anteriores à confirmação mostram a transição.
+
+O resumo antigo de E5 usa timeout de 12 s; a execução complementar documenta
+o timeout de 15 s solicitado no roteiro, sem substituir os registros originais.
+
+O relatório deve apresentar os diagramas próprios, Q1–Q14, S1–S4,
+previsões/análises de E1–E9, quadro-síntese, referências, papel dos integrantes
+e declaração de uso de IA, conforme o PDF do professor.
 O roteiro tem indicações conflitantes de duração da demonstração; ensaie o tempo
 com a equipe. Prepare vídeo de contingência e comece com o cluster em execução.
 

@@ -213,20 +213,26 @@ try:
 
 except (Exception, KeyboardInterrupt) as erro:
     print("\nEXPERIMENTO INTERROMPIDO:", erro)
+    raise SystemExit(1)
 
 finally:
+    restauracao_ok = True
     try:
         descongelar()
     except Exception as erro:
+        restauracao_ok = False
         print("ATENCAO: nao foi possivel confirmar o unpause:", erro)
 
     try:
         configurar_grace(20)
         print("Grace restaurado para 20 segundos.")
     except Exception as erro:
+        restauracao_ok = False
         print("ATENCAO: confira a restauracao do grace:", erro)
 
     salvar()
+    if not restauracao_ok:
+        raise SystemExit(1)
 
 
 print("\nRESULTADOS DO E9")

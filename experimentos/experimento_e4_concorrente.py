@@ -155,3 +155,6 @@ for erro in erros:
     print("ERRO:", erro)
 
 print(f"Resultados salvos em: {arquivo}")
+
+if erros or inconsistencias or escritas != TOTAL:
+    raise SystemExit(1)

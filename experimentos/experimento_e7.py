@@ -126,6 +126,8 @@ except (Exception, KeyboardInterrupt) as erro:
     except Exception as erro_recuperacao:
         print(f"Verificar manualmente ceph3: {erro_recuperacao}")
 
+    raise SystemExit(1)
+
 finally:
     if resultados:
         with (PASTA / "resultados.csv").open(

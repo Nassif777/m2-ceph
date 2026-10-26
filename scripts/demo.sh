@@ -16,6 +16,16 @@ sys.exit(0 if o["num_up_osds"]==3 and o["num_in_osds"]==3 and len(q)==3 and p["n
 '
 }
 
+recuperar_ao_sair() {
+  local codigo=$?
+  trap - EXIT INT TERM
+  if ! bash scripts/demo.sh recuperar; then
+    echo 'Recuperacao incompleta. Nao continue a demonstracao; confira o status.'
+    exit 1
+  fi
+  exit "$codigo"
+}
+
 case "${1:-ajuda}" in
   status) bash scripts/verificar_cluster.sh ;;
   objeto) normal; bash scripts/testar_objeto.sh ;;
@@ -29,18 +39,24 @@ case "${1:-ajuda}" in
   falha)
     normal || { echo 'Comece com tres MONs, tres OSDs e todos os PGs active+clean.'; exit 1; }
     # Restaura os servicos existentes mesmo se a demonstracao for interrompida.
-    trap 'bash scripts/demo.sh recuperar' EXIT
+    trap recuperar_ao_sair EXIT
+    trap 'exit 130' INT
+    trap 'exit 143' TERM
     bash scripts/testar_objeto.sh
     docker stop -t 5 ceph3
     detectado=0
     for _ in $(seq 1 45); do
-      if timeout 10 docker exec ceph1 ceph osd dump -f json | python3 -c '
+      if timeout 10 docker exec ceph1 ceph status -f json | python3 -c '
 import json,sys
 try:
     d=json.load(sys.stdin)
 except (ValueError, OSError):
     sys.exit(1)
-sys.exit(0 if any(o["osd"]==2 and o["up"]==0 for o in d["osds"]) else 1)
+o=d["osdmap"]; p=d["pgmap"]
+estados=p.get("pgs_by_state", [])
+prontos=(p["num_pgs"]>0 and sum(x["count"] for x in estados)==p["num_pgs"]
+         and all("active" in x["state_name"].split("+") and "stale" not in x["state_name"].split("+") for x in estados))
+sys.exit(0 if o["num_up_osds"]==2 and len(d.get("quorum_names", []))==2 and prontos else 1)
 '; then detectado=1; break; fi
       sleep 2
     done
