@@ -57,8 +57,7 @@ bash scripts/configurar_cluster.sh
 Requer Linux, Docker Compose, Bash, Python 3, `timeout` e acesso à imagem
 `quay.io/ceph/ceph:v19`. No Codespaces, o instalador aplica o ajuste de firewall
 da bridge usado neste laboratório; ele exige sudo. O instalador pede confirmação
-e recusa dados existentes. A instalação a partir de clone limpo ainda precisa
-ser validada em um ambiente separado.
+e recusa dados existentes. A instalação a partir de clone limpo foi validada em um Codespace separado em 27/10/2026 (commit `a832af0`), com `HEALTH_OK`, três MONs em quórum, três OSDs ativos e 33 PGs `active+clean`. A escrita pelo ceph1 e a leitura pelo ceph3 também foram verificadas. Registro: [`evidencias/validacao_instalacao_20261027.txt`](evidencias/validacao_instalacao_20261027.txt).
 
 **Preserve `dados/` e `.git/`. Não execute instaladores no cluster atual,
 não apague os dados e não use `docker compose down -v`.**
